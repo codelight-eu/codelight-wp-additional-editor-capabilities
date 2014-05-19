@@ -28,6 +28,8 @@ class Codelight_Additional_Editor_Capabilities {
 
     function __construct() {
 
+        $this->caps = apply_filters('cl_editor_capabilities', $this->caps);
+
         add_filter( 'editable_roles', array($this, 'editable_roles') );
         add_filter( 'map_meta_cap', array($this, 'map_meta_cap'), 10, 4 );
 
