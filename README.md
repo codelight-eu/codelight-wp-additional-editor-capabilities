@@ -1,0 +1,2 @@
+wp-additional-editor-capabilities
+=================================
