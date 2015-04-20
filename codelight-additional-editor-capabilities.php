@@ -4,7 +4,7 @@
  Plugin URI: http://codelight.eu
  Description: Allow Editor roles to add, edit or remove non-admin users; grant access to Appearance menu. Based on <a href="http://wordpress.stackexchange.com/a/4500">this stackoverflow answer</a> by John P Bloch.
  Author: Codelight.eu
- Version: 1.0
+ Version: 1.1
  Author URI: http://codelight.eu
  */
 
@@ -15,35 +15,49 @@ if ( ! defined( 'WPINC' ) ) {
 class Codelight_Additional_Editor_Capabilities {
 
     // These capabilities will be given to the Editor role
-    public $caps = array(
+    public $editor_caps = array(
         'list_users',
         'add_users',
         'create_users',
         'edit_users',
         'promote_users',
         'remove_users',
-        'delete_users', // --> this breaks is_super_admin() calls, making the Editor role a super admin
-        'edit_theme_options'
+        'delete_users',         // --> This breaks is_super_admin() calls, making the Editor role a super admin
+        'edit_theme_options'    // --> Appearance menu items
+    );
+
+    // These capabilities will be given to the WooCommerce Shop Manager role
+    public $shop_manager_caps = array(
+        'edit_theme_options'    // --> Appearance menu items
     );
 
     function __construct() {
 
-        $this->caps = apply_filters('cl_editor_capabilities', $this->caps);
+        $this->editor_caps            = apply_filters('cl_editor_capabilities', $this->editor_caps);
+        $this->shop_manager_caps_caps = apply_filters('cl_shop_manager_capabilities', $this->shop_manager_caps);
 
         add_filter( 'editable_roles', array($this, 'editable_roles') );
         add_filter( 'map_meta_cap', array($this, 'map_meta_cap'), 10, 4 );
 
         register_activation_hook( __FILE__, array($this, 'add_editor_capabilities') );
         register_deactivation_hook( __FILE__, array($this, 'remove_editor_capabilities') );
+
+        register_activation_hook( __FILE__, array($this, 'add_shop_manager_capabilities') );
+        register_deactivation_hook( __FILE__, array($this, 'remove_shop_manager_capabilities') );
         
     }
 
     /*
-     * On plugin activation, add user-related capabilities to Editor role.
+     * On plugin activation, add capabilities to Editor role.
      */
     function add_editor_capabilities() {
         $editor = get_role('editor');
-        foreach ($this->caps as $cap) {
+
+        if (is_null($editor)) {
+            return;
+        }
+
+        foreach ($this->editor_caps as $cap) {
             $editor->add_cap($cap);
         }
     }
@@ -53,8 +67,44 @@ class Codelight_Additional_Editor_Capabilities {
      */
     function remove_editor_capabilities() {
         $editor = get_role('editor');
-        foreach ($this->caps as $cap) {
+
+        if (is_null($editor)) {
+            return;
+        }
+
+        foreach ($this->editor_caps as $cap) {
             $editor->remove_cap($cap);
+        }
+        
+    }
+
+    /*
+     * On plugin activation, add capabilities to Shop Manager role.
+     */
+    function add_shop_manager_capabilities() {
+        $manager = get_role('shop_manager');
+
+        if (is_null($manager)) {
+            return;
+        }
+
+        foreach ($this->shop_manager_caps as $cap) {
+            $manager->add_cap($cap);
+        }
+    }
+
+    /*
+     * On plugin deactivation, remove all previously added capabilities.
+     */
+    function remove_shop_manager_capabilities() {
+        $manager = get_role('shop_manager');
+
+        if (is_null($manager)) {
+            return;
+        }
+
+        foreach ($this->shop_manager_caps as $cap) {
+            $manager->remove_cap($cap);
         }
     }
 

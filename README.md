@@ -1,9 +1,11 @@
 wp-additional-editor-capabilities
 =================================
 
-Allow less technical clients to manage their Wordpress site without all the bloat in admin interface by giving them a slightly enhanced Editor role.
+Allow less technical clients to manage their Wordpress site without all the bloat in admin interface by giving them a slightly enhanced Editor/Shop Manager role.
 
-This plugin grants the Editor role permissions to edit (non-admin) users and gives them access to Appearance menu items. This should be everything a non-technical client needs to manage their site, with a pleasantly clean and empty admin interface.
+This plugin grants the Editor role permissions to edit (non-admin) users and gives them access to Appearance menu items. 
+For WooCommerce users, the Shop Manager role is granted access to Appearance menu as well.
+This should be everything a non-technical client needs to manage their site, with a pleasantly clean and empty admin interface.
 
 For even better results, combine with [WP-Cleanup](https://github.com/codelight-eu/wp-cleanup).
 
@@ -27,5 +29,12 @@ By default, the Editor role is given the following capabilities:
 ```
 
 To edit the given capabilities, use the _'cl_editor_capabilities'_ filter.
+
+By default, the Shop Manager role is given the following capabilities:
+```
+'edit_theme_options'
+```
+
+To edit the given capabilities, use the _'cl_shop_manager_capabilities'_ filter.
 
 **Notice:** This ~breaks the *is_super_admin()* function as on non-multisites it will check for 'delete_users' capability. Shouldn't affect Wordpress itself, but some plugins may rely on that function and thus give the Editor access to something they shouldn't have access to.
