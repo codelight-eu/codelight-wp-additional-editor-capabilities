@@ -4,7 +4,7 @@
  Plugin URI: http://codelight.eu
  Description: Allow Editor roles to add, edit or remove non-admin users; grant access to Appearance menu. Based on <a href="http://wordpress.stackexchange.com/a/4500">this stackoverflow answer</a> by John P Bloch.
  Author: Codelight.eu
- Version: 1.1
+ Version: 1.2
  Author URI: http://codelight.eu
  */
 
@@ -22,7 +22,6 @@ class Codelight_Additional_Editor_Capabilities {
         'edit_users',
         'promote_users',
         'remove_users',
-        'delete_users',         // --> This breaks is_super_admin() calls, making the Editor role a super admin
         'edit_theme_options'    // --> Appearance menu items
     );
 
@@ -44,7 +43,7 @@ class Codelight_Additional_Editor_Capabilities {
 
         register_activation_hook( __FILE__, array($this, 'add_shop_manager_capabilities') );
         register_deactivation_hook( __FILE__, array($this, 'remove_shop_manager_capabilities') );
-        
+
     }
 
     /*
@@ -75,7 +74,7 @@ class Codelight_Additional_Editor_Capabilities {
         foreach ($this->editor_caps as $cap) {
             $editor->remove_cap($cap);
         }
-        
+
     }
 
     /*
@@ -120,7 +119,7 @@ class Codelight_Additional_Editor_Capabilities {
 
     /*
     * If someone is trying to edit or delete and admin and that user isn't an admin, don't allow it.
-    */ 
+    */
     function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
         switch ($cap) {
@@ -134,7 +133,7 @@ class Codelight_Additional_Editor_Capabilities {
                 } elseif( !isset($args[0]) ) {
                     $caps[] = 'do_not_allow';
                 }
-                
+
                 $other = new WP_User( absint($args[0]) );
                 if ( $other->has_cap( 'administrator' ) ) {
                     if ( !current_user_can('administrator') ) {
@@ -157,7 +156,7 @@ class Codelight_Additional_Editor_Capabilities {
                         $caps[] = 'do_not_allow';
                     }
                 }
-                
+
                 break;
 
             default:
