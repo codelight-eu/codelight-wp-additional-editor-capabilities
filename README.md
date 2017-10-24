@@ -37,4 +37,4 @@ By default, the Shop Manager role is given the following capabilities:
 
 To edit the given capabilities, use the _'cl_shop_manager_capabilities'_ filter.
 
-**Notice:** This ~breaks the *is_super_admin()* function as on non-multisites it will check for 'delete_users' capability. Shouldn't affect Wordpress itself, but some plugins may rely on that function and thus give the Editor access to something they shouldn't have access to.
+Note that the shop manager / editor are not given the capability to delete users.
