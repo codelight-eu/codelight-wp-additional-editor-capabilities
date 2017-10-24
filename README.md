@@ -24,7 +24,6 @@ By default, the Editor role is given the following capabilities:
 'edit_users',
 'promote_users',
 'remove_users',
-'delete_users',
 'edit_theme_options'
 ```
 
